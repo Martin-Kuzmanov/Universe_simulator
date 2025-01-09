@@ -63,14 +63,15 @@ mutateUniverse universe = do
                           let newOnes = concat [breakAtom (atom,out) | (atom,out) <- zip breakingOnes outcomes2]
                           return (stableOnes ++ survivingOnes ++ newOnes)
 
-updateUniverse :: [String] -> Int -> IO String
-updateUniverse universe iteration = do 
-                     print universe
+updateUniverse :: [String] -> Int -> String -> [String] -> IO String
+updateUniverse universe iteration answer prev = do 
+                     if answer /= "n" || prev /= universe then print universe
+                     else return ()
                      if all (`elem` stableParticles) universe
                      then return ("Reached stability in " ++ (show iteration :: String) ++ " moves!")
                      else do 
                           newUniverse <- mutateUniverse universe :: IO [String]
-                          updateUniverse newUniverse (iteration + 1)
+                          updateUniverse newUniverse (iteration + 1) answer universe
                           
 
 readBeggining :: IO [String]
@@ -100,7 +101,9 @@ validInput = do
 main :: IO ()
 main = do
        universe <- validInput :: IO [String]
-       res <- updateUniverse universe 1 :: IO String
+       putStr "Искате ли повтарящи се стъпки:[y/n] "
+       answer <- getLine
+       res <- updateUniverse universe 1 answer [""]:: IO String
        print res
         
            
