@@ -65,8 +65,8 @@ mutateUniverse universe = do
 
 updateUniverse :: [String] -> Int -> String -> [String] -> IO String
 updateUniverse universe iteration answer prev = do 
-                     if answer /= "n" || prev /= universe then print universe
-                     else return ()
+                     if answer /= "n" || prev /= universe then print universe :: IO ()
+                     else return () :: IO ()
                      if all (`elem` stableParticles) universe
                      then return ("Reached stability in " ++ (show iteration :: String) ++ " moves!")
                      else do 
